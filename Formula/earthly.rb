@@ -17,7 +17,7 @@ class Earthly < Formula
     sha256 cellar: :any_skip_relocation, x86_64_linux: "5ed115f52074a8d3399c660566c3ad2d77ee9d1c0a0e99a570c5b36a0d316e34"
   end
 
-  depends_on "go" => :build
+  depends_on "go@1.16" => :build
 
   def install
     ldflags = "-X main.DefaultBuildkitdImage=earthly/buildkitd:v#{version} -X main.Version=v#{version} -X main.GitSha=68e0565ae0adef1f0b4711a18f797684525fc9e8 "
