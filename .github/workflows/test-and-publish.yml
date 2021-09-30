@@ -20,6 +20,9 @@ jobs:
       - name: install jq
         run: brew install jq
 
+      - name: test jq
+        run: echo '{"id": "foo"}' | jq .id
+
       - name: Cache Homebrew Bundler RubyGems
         id: cache
         uses: actions/cache@v1
