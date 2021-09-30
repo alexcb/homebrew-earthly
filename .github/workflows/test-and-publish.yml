@@ -62,7 +62,8 @@ jobs:
           fi
           RELEASE_TAG="earthly-$VERSION"
           # first delete any previously released files (needed in case the previous upload attempt failed)
-          PREV_RELEASE_ID=$(curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/$GITHUB_REPOSITORY/releases/tags/$RELEASE_TAG" | jq .id)
+          curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/$GITHUB_REPOSITORY/releases/tags/$RELEASE_TAG" | jq .id > prev_release_id
+          PREV_RELEASE_ID="$(cat prev_release_id)"
           if [ -n "$PREV_RELEASE_ID" ] && [ "$PREV_RELEASE_ID" != "null" ]; then
             echo "deleting previous release ID $PREV_RELEASE_ID"
             curl -s -H "Authorization: token $GITHUB_TOKEN" --request DELETE "https://api.github.com/repos/$GITHUB_REPOSITORY/releases/$PREV_RELEASE_ID"
