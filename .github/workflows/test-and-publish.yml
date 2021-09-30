@@ -45,6 +45,10 @@ jobs:
       - name: move bottles into bottles/ dir
         run: mkdir bottles/ && mv *.bottle.* bottles/
 
+      # At this point jq is no longer available due to the brew test-bot command changing things
+      - name: reinstall jq
+        run: brew install jq
+
       - name: debug
         run: ls -la /usr/local/bin/jq
 
