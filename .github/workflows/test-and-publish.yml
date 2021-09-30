@@ -5,14 +5,17 @@ on:
       - release-*
 jobs:
   tests:
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-    runs-on: ${{ matrix.os }}
+    runs-on: macos-latest
     steps:
       - name: Set up Homebrew
         id: set-up-homebrew
         uses: Homebrew/actions/setup-homebrew@master
+
+      - name: Set up git
+        uses: Homebrew/actions/git-user-config@master
+
+      - name: setup github-release
+        run: npm install -g github-release-cli@v1.3.1
 
       - name: Cache Homebrew Bundler RubyGems
         id: cache
@@ -28,42 +31,13 @@ jobs:
 
       - run: brew test-bot --verbose ./Formula/earthly.rb
 
-      - run: find . | grep -i earthly
-
       # homebrew intentially adds in two hyphens under
       # https://github.com/Homebrew/brew/blob/b55498269f1fb0380cfd7122f6bbc0fc0125c35f/Library/Homebrew/software_spec.rb#L279
       - name: remove double hyphens which are produced by test-bot
         run: ls earthly--* | grep bottle | awk -F "--" '{print "mv " $0 " " $1"-"$2}' | sh
 
-      - name: test bottles do not contain double hyphens
-        run: if find . | grep "earthly--"; then echo "two hyphens should not happen"; exit 1; fi
-
-      - name: test at least one bottle has been produced
-        run: find . | grep -i earthly | grep bottle
-
-      - name: Upload bottles as artifact
-        uses: actions/upload-artifact@main
-        with:
-          name: bottles
-          path: '*.bottle.*'
-  bottle-and-merge:
-    needs: tests
-    runs-on: ubuntu-latest
-    steps:
-      - name: Set up Homebrew
-        uses: Homebrew/actions/setup-homebrew@master
-
-      - name: Set up git
-        uses: Homebrew/actions/git-user-config@master
-
-      - name: setup github-release
-        run: npm install -g github-release-cli@v1.3.1
-
-      - name: Download all workflow run artifacts
-        uses: actions/download-artifact@v2
-
-      - name: list bottles
-        run: find bottles && cat bottles/*.json
+      - name: move bottles into bottles/ dir
+        run: mkdir bottles/ && mv *.bottle.* bottles/
 
       - name: merge bottles
         env:
