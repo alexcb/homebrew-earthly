@@ -41,8 +41,8 @@ jobs:
           HOMEBREW_GITHUB_API_TOKEN: ${{ github.token }}
         run: brew bottle --merge --root-url "https://github.com/$GITHUB_REPOSITORY/releases/download/" --write bottles/*.json
 
-      # At this point jq is no longer available due to the brew test-bot command changing things
-      - name: reinstall jq
+      # "brew test-bot" removes dependencies; we must re-install them here
+      - name: (re)install dependencies
         run: brew install jq npm
 
       - name: setup github-release
