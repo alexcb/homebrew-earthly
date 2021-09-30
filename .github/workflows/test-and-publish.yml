@@ -17,11 +17,8 @@ jobs:
       - name: setup github-release
         run: npm install -g github-release-cli@v1.3.1
 
-      - name: install jq
-        run: brew install jq
-
-      - name: test jq
-        run: echo eyJpZCI6ICJmb28ifQo= | base64 -d | jq .id
+      - name: debug
+        run: jq --help && which jq && env
 
       - name: Cache Homebrew Bundler RubyGems
         id: cache
