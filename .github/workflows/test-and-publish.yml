@@ -17,6 +17,9 @@ jobs:
       - name: setup github-release
         run: npm install -g github-release-cli@v1.3.1
 
+      - name: install jq
+        run: brew install jq
+
       - name: Cache Homebrew Bundler RubyGems
         id: cache
         uses: actions/cache@v1
